@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentes R - Plataforma Completa de Gestión de Llamadas IA | Antares Innovate</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0B1426;
+            --secondary-dark: #1E293B;
+            --black-elegant: #000000;
+            --dark-surface: #0F172A;
+            --blue-accent: #1E40AF;
+            --blue-light: #3B82F6;
+            --tech-accent: #64748B;
+            --tech-glow: #94A3B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--black-elegant) 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 20px;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(30, 41, 59, 0.2);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(59, 130, 246, 0.2);
+            z-index: 50;
+            padding: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metric-card {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--blue-light);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            height: 400px;
+        }
+
+        .data-table {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+        }
+
+        .table-row {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--tech-glow);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--tech-glow);
+            color: var(--primary-dark);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(34, 197, 94, 0.2); color: #22C55E; }
+        .status-busy { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+        .status-available { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+        .status-offline { background: rgba(156, 163, 175, 0.2); color: #9CA3AF; }
+
+        .lead-hot { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+        .lead-warm { background: rgba(251, 191, 36, 0.2); color: #F59E0B; }
+        .lead-cold { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--tech-glow);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .drag-zone {
+            border: 2px dashed rgba(59, 130, 246, 0.5);
+            border-radius: 16px;
+            padding: 60px 20px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drag-zone:hover, .drag-zone.dragover {
+            border-color: var(--blue-light);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(100, 116, 139, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .agent-card {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .agent-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .call-log {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--blue-light);
+        }
+
+        .audio-player {
+            background: rgba(100, 116, 139, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .play-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--blue-light);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .waveform {
+            flex: 1;
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--tech-glow) 0px,
+                var(--tech-glow) 2px,
+                transparent 2px,
+                transparent 6px
+            );
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .user-profile {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--blue-accent) 0%, var(--blue-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 16px;
+        }
+
+        .notification-item {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-success { background: rgba(34, 197, 94, 0.2); color: #22C55E; }
+        .notification-warning { background: rgba(251, 191, 36, 0.2); color: #F59E0B; }
+        .notification-info { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+
+        .config-section {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 116, 139, 0.3);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--blue-light);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-particle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-particle" style="top: 20%; right: 15%; animation-delay: 1s;"></div>
+        <div class="floating-particle" style="top: 60%; left: 5%; animation-delay: 2s;"></div>
+        <div class="floating-particle" style="top: 80%; right: 20%; animation-delay: 3s;"></div>
+        <div class="floating-particle" style="top: 40%; left: 80%; animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-robot text-white"></i>
+            </div>
+            <div>
+                <div class="text-lg font-bold">Agentes R</div>
+                <div class="text-sm text-gray-400">Antares Innovate</div>
+            </div>
+        </div>
+
+        <!-- User Profile in Sidebar -->
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user text-white"></i>
+            </div>
+            <div class="text-center">
+                <div class="font-semibold">Carlos Mendoza</div>
+                <div class="text-sm text-gray-400">Administrador</div>
+                <div class="text-xs text-blue-400 mt-1">Plan Premium</div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav>
+            <div class="nav-item active" onclick="switchSection('dashboard')">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="switchSection('database')">
+                <i class="fas fa-database"></i>
+                <span>Base de Datos</span>
+            </div>
+            <div class="nav-item" onclick="switchSection('agents')">
+                <i class="fas fa-user-cog"></i>
+                <span>Agentes</span>
+            </div>
+            <div class="nav-item" onclick="switchSection('history')">
+                <i class="fas fa-history"></i>
+                <span>Historial</span>
+            </div>
+            <div class="nav-item" onclick="switchSection('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </div>
+        </nav>
+
+        <!-- System Status -->
+        <div class="mt-8 p-4 bg-black bg-opacity-20 rounded-lg">
+            <div class="text-sm font-semibold mb-2">Estado del Sistema</div>
+            <div class="flex items-center gap-2 mb-1">
+                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span class="text-xs">Agentes: 3/3 Activos</span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+                <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span class="text-xs">Llamadas: 12 en curso</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                <span class="text-xs">CPU: 78% uso</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section active">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Dashboard Principal</h1>
+                <p class="text-gray-400">Resumen completo de actividad y métricas en tiempo real</p>
+            </div>
+
+            <!-- Real-time Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="metric-card">
+                    <div class="metric-value" id="activeCalls">24</div>
+                    <div class="metric-label">Llamadas Activas</div>
+                    <div class="text-xs text-green-400 mt-2">
+                        <i class="fas fa-arrow-up"></i> +15% vs ayer
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="leadsToday">156</div>
+                    <div class="metric-label">Leads Generados Hoy</div>
+                    <div class="text-xs text-green-400 mt-2">
+                        <i class="fas fa-arrow-up"></i> +28% vs ayer
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="conversionRate">18.5%</div>
+                    <div class="metric-label">Tasa de Conversión</div>
+                    <div class="text-xs text-blue-400 mt-2">
+                        <i class="fas fa-chart-line"></i> Promedio semanal
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="estimatedRevenue">$47.2K</div>
+                    <div class="metric-label">Ingresos Estimados</div>
+                    <div class="text-xs text-green-400 mt-2">
+                        <i class="fas fa-dollar-sign"></i> Este mes
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="chart-container">
+                    <h3 class="text-xl font-semibold mb-4">Rendimiento Diario</h3>
+                    <canvas id="dailyChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 class="text-xl font-semibold mb-4">Humano vs IA</h3>
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Status Widgets and Alerts -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Agent Status Widget -->
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">Estado de Agentes</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span>Luis - Tecnología</span>
+                            <span class="status-badge status-active">Activo</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Ana - Ventas</span>
+                            <span class="status-badge status-busy">Ocupado</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Miguel - Soporte</span>
+                            <span class="status-badge status-available">Disponible</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Widget -->
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">Rendimiento</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm">Llamadas Simultáneas</span>
+                                <span class="text-sm">24/50</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 48%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm">Satisfacción Promedio</span>
+                                <span class="text-sm">4.7/5</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 94%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm">Tiempo Respuesta</span>
+                                <span class="text-sm">1.2s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Panel -->
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">Alertas y Notificaciones</h3>
+                    <div class="space-y-3">
+                        <div class="notification-item">
+                            <div class="notification-icon notification-success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">Alta conversión detectada</div>
+                                <div class="text-gray-400 text-xs">Hace 15 min</div>
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-icon notification-warning">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">Agente necesita descanso</div>
+                                <div class="text-gray-400 text-xs">Hace 30 min</div>
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-icon notification-info">
+                                <i class="fas fa-info"></i>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">Actualización disponible</div>
+                                <div class="text-gray-400 text-xs">Hace 1 hora</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROI Summary -->
+            <div class="metric-card">
+                <h3 class="text-xl font-semibold mb-4">Resumen ROI - Este Mes</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-400 mb-2">-68%</div>
+                        <div class="text-gray-400">Ahorro Operativo</div>
+                        <div class="text-sm text-gray-500 mt-1">$28,450 ahorrados</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-400 mb-2">+342%</div>
+                        <div class="text-gray-400">Incremento de Leads</div>
+                        <div class="text-sm text-gray-500 mt-1">2,847 leads nuevos</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-400 mb-2">+156%</div>
+                        <div class="text-gray-400">Productividad</div>
+                        <div class="text-sm text-gray-500 mt-1">24/7 disponibilidad</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Section -->
+        <div id="database-section" class="content-section">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Base de Datos</h1>
+                <p class="text-gray-400">Gestión completa de clientes y prospectos</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="mb-8">
+                <div class="drag-zone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Arrastra archivos aquí</h3>
+                    <p class="text-gray-400 mb-4">O haz clic para seleccionar archivos CSV, Excel</p>
+                    <button class="btn-primary">
+                        <i class="fas fa-upload"></i>
+                        Seleccionar Archivos
+                    </button>
+                    <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls" multiple>
+                </div>
+            </div>
+
+            <!-- Filters and Actions -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <select class="form-input w-auto">
+                    <option>Todas las industrias</option>
+                    <option>Tecnología</option>
+                    <option>Salud</option>
+                    <option>Finanzas</option>
+                    <option>Educación</option>
+                </select>
+                <select class="form-input w-auto">
+                    <option>Todas las etapas</option>
+                    <option>Nuevo</option>
+                    <option>Contactado</option>
+                    <option>Interesado</option>
+                    <option>Convertido</option>
+                </select>
+                <select class="form-input w-auto">
+                    <option>Todos los agentes</option>
+                    <option>Luis</option>
+                    <option>Ana</option>
+                    <option>Miguel</option>
+                </select>
+                <button class="btn-primary" onclick="openModal('newClientModal')">
+                    <i class="fas fa-plus"></i>
+                    Nuevo Cliente
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Exportar CSV
+                </button>
+            </div>
+
+            <!-- Database Table -->
+            <div class="data-table">
+                <div class="table-header grid grid-cols-7 gap-4">
+                    <div>Nombre</div>
+                    <div>Empresa</div>
+                    <div>Teléfono</div>
+                    <div>Email</div>
+                    <div>Industria</div>
+                    <div>Estado</div>
+                    <div>Acciones</div>
+                </div>
+                <div id="clientsTableBody">
+                    <div class="table-row grid grid-cols-7 gap-4 items-center">
+                        <div class="font-medium">María González</div>
+                        <div>TechCorp S.A.</div>
+                        <div>+57 301 234 5678</div>
+                        <div class="text-blue-400">maria@techcorp.com</div>
+                        <div>Tecnología</div>
+                        <div><span class="status-badge lead-hot">Caliente</span></div>
+                        <div class="flex gap-2">
+                            <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-row grid grid-cols-7 gap-4 items-center">
+                        <div class="font-medium">Carlos Ruiz</div>
+                        <div>Innovate Ltd</div>
+                        <div>+57 312 987 6543</div>
+                        <div class="text-blue-400">carlos@innovate.com</div>
+                        <div>Consultoría</div>
+                        <div><span class="status-badge lead-warm">Tibio</span></div>
+                        <div class="flex gap-2">
+                            <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-row grid grid-cols-7 gap-4 items-center">
+                        <div class="font-medium">Ana Morales</div>
+                        <div>Digital Solutions</div>
+                        <div>+57 320 456 7890</div>
+                        <div class="text-blue-400">ana@digital.com</div>
+                        <div>Marketing</div>
+                        <div><span class="status-badge lead-cold">Frío</span></div>
+                        <div class="flex gap-2">
+                            <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+                <div class="metric-card text-center">
+                    <div class="text-2xl font-bold text-blue-400 mb-2">1,247</div>
+                    <div class="text-gray-400">Total Clientes</div>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-2xl font-bold text-red-400 mb-2">89</div>
+                    <div class="text-gray-400">Leads Calientes</div>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-2xl font-bold text-yellow-400 mb-2">234</div>
+                    <div class="text-gray-400">Leads Tibios</div>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-2xl font-bold text-blue-400 mb-2">924</div>
+                    <div class="text-gray-400">Leads Fríos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agents Section -->
+        <div id="agents-section" class="content-section">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Gestión de Agentes</h1>
+                <p class="text-gray-400">Administra y configura tus agentes IA</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 mb-8">
+                <button class="btn-primary" onclick="openModal('newAgentModal')">
+                    <i class="fas fa-plus"></i>
+                    Nuevo Agente
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-play"></i>
+                    Iniciar Todos
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-pause"></i>
+                    Pausar Todos
+                </button>
+            </div>
+
+            <!-- Agents Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Agent 1 -->
+                <div class="agent-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="agent-avatar">
+                            <i class="fas fa-male text-white"></i>
+                        </div>
+                        <span class="status-badge status-active">Activo</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Luis Martínez</h3>
+                    <p class="text-gray-400 text-sm mb-4">Especialista en Tecnología</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-sm">Llamadas hoy:</span>
+                            <span class="text-blue-400 font-semibold">47</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Conversiones:</span>
+                            <span class="text-green-400 font-semibold">12 (25.5%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Tiempo promedio:</span>
+                            <span class="text-yellow-400 font-semibold">3m 42s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Satisfacción:</span>
+                            <span class="text-purple-400 font-semibold">4.8/5</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button class="btn-primary text-sm">
+                            <i class="fas fa-cog"></i>
+                            Configurar
+                        </button>
+                        <button class="btn-secondary text-sm">
+                            <i class="fas fa-pause"></i>
+                            Pausar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Agent 2 -->
+                <div class="agent-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="agent-avatar">
+                            <i class="fas fa-female text-white"></i>
+                        </div>
+                        <span class="status-badge status-busy">Ocupado</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Ana Rivera</h3>
+                    <p class="text-gray-400 text-sm mb-4">Especialista en Ventas</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-sm">Llamadas hoy:</span>
+                            <span class="text-blue-400 font-semibold">52</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Conversiones:</span>
+                            <span class="text-green-400 font-semibold">18 (34.6%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Tiempo promedio:</span>
+                            <span class="text-yellow-400 font-semibold">4m 15s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Satisfacción:</span>
+                            <span class="text-purple-400 font-semibold">4.9/5</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button class="btn-primary text-sm">
+                            <i class="fas fa-cog"></i>
+                            Configurar
+                        </button>
+                        <button class="btn-secondary text-sm">
+                            <i class="fas fa-pause"></i>
+                            Pausar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Agent 3 -->
+                <div class="agent-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="agent-avatar">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <span class="status-badge status-available">Disponible</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Miguel Santos</h3>
+                    <p class="text-gray-400 text-sm mb-4">Especialista en Soporte</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-sm">Llamadas hoy:</span>
+                            <span class="text-blue-400 font-semibold">31</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Conversiones:</span>
+                            <span class="text-green-400 font-semibold">8 (25.8%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Tiempo promedio:</span>
+                            <span class="text-yellow-400 font-semibold">5m 12s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm">Satisfacción:</span>
+                            <span class="text-purple-400 font-semibold">4.7/5</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button class="btn-primary text-sm">
+                            <i class="fas fa-cog"></i>
+                            Configurar
+                        </button>
+                        <button class="btn-secondary text-sm">
+                            <i class="fas fa-play"></i>
+                            Activar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Performance Chart -->
+            <div class="chart-container mb-8">
+                <h3 class="text-xl font-semibold mb-4">Rendimiento de Agentes - Últimos 7 días</h3>
+                <canvas id="agentPerformanceChart"></canvas>
+            </div>
+
+            <!-- Training and Schedule Management -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Training Section -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Capacitación y Conocimiento</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>Base de conocimientos actualizada</span>
+                            <span class="text-green-400"><i class="fas fa-check-circle"></i> Al día</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Scripts de conversación</span>
+                            <button class="btn-secondary text-sm">Editar</button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Actualizaciones pendientes</span>
+                            <span class="text-yellow-400">3 disponibles</span>
+                        </div>
+                        <button class="btn-primary w-full">
+                            <i class="fas fa-brain"></i>
+                            Entrenar Agentes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Schedule Management -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Horarios de Trabajo</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Inicio</label>
+                                <input type="time" class="form-input" value="08:00">
+                            </div>
+                            <div>
+                                <label class="form-label">Fin</label>
+                                <input type="time" class="form-input" value="18:00">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Días de trabajo</label>
+                            <div class="grid grid-cols-7 gap-2">
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1" checked> L
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1" checked> M
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1" checked> X
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1" checked> J
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1" checked> V
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1"> S
+                                </label>
+                                <label class="flex items-center justify-center p-2 border rounded cursor-pointer">
+                                    <input type="checkbox" class="mr-1"> D
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn-primary w-full">
+                            <i class="fas fa-save"></i>
+                            Guardar Horarios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="history-section" class="content-section">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Historial de Llamadas</h1>
+                <p class="text-gray-400">Registro completo de todas las interacciones</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <input type="date" class="form-input w-auto" placeholder="Fecha inicio">
+                <input type="date" class="form-input w-auto" placeholder="Fecha fin">
+                <select class="form-input w-auto">
+                    <option>Todos los agentes</option>
+                    <option>Luis</option>
+                    <option>Ana</option>
+                    <option>Miguel</option>
+                </select>
+                <select class="form-input w-auto">
+                    <option>Todos los resultados</option>
+                    <option>Convertido</option>
+                    <option>No convertido</option>
+                    <option>Transferido</option>
+                    <option>No contestó</option>
+                </select>
+                <button class="btn-secondary">
+                    <i class="fas fa-search"></i>
+                    Buscar
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Exportar Reporte
+                </button>
+            </div>
+
+            <!-- Call Logs -->
+            <div class="space-y-4 mb-8">
+                <!-- Call Log 1 -->
+                <div class="call-log">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold">María González - TechCorp S.A.</h4>
+                            <p class="text-sm text-gray-400">+57 301 234 5678 • Agente: Luis</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-active">Convertido</span>
+                            <div class="text-sm text-gray-400 mt-1">Hoy 14:32 • 4m 15s</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-3 mb-3">
+                        <div class="text-sm text-gray-300 mb-2">Transcripción:</div>
+                        <p class="text-sm">"Buenos días, soy Luis de TechStore. He visto que está interesada en nuestros equipos de cómputo empresarial..."</p>
+                        <button class="text-blue-400 text-sm mt-2">Ver transcripción completa</button>
+                    </div>
+
+                    <div class="audio-player">
+                        <button class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="waveform"></div>
+                        <span class="text-sm">4:15</span>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm">Satisfacción: <span class="text-green-400">★★★★★ 5.0</span></span>
+                            <span class="text-sm">Sentimiento: <span class="text-green-400">Positivo</span></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-secondary text-sm">
+                                <i class="fas fa-calendar"></i>
+                                Programar Follow-up
+                            </button>
+                            <button class="btn-secondary text-sm">
+                                <i class="fas fa-notes-medical"></i>
+                                Agregar Nota
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Log 2 -->
+                <div class="call-log">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold">Carlos Ruiz - Innovate Ltd</h4>
+                            <p class="text-sm text-gray-400">+57 312 987 6543 • Agente: Ana</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge lead-warm">Interesado</span>
+                            <div class="text-sm text-gray-400 mt-1">Hoy 13:15 • 6m 42s</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-3 mb-3">
+                        <div class="text-sm text-gray-300 mb-2">Transcripción:</div>
+                        <p class="text-sm">"Hola Carlos, soy Ana de Antares Innovate. Quería contactarte porque vi tu perfil en LinkedIn..."</p>
+                        <button class="text-blue-400 text-sm mt-2">Ver transcripción completa</button>
+                    </div>
+
+                    <div class="audio-player">
+                        <button class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="waveform"></div>
+                        <span class="text-sm">6:42</span>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm">Satisfacción: <span class="text-yellow-400">★★★★☆ 4.2</span></span>
+                            <span class="text-sm">Sentimiento: <span class="text-yellow-400">Neutral</span></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-secondary text-sm">
+                                <i class="fas fa-calendar"></i>
+                                Programar Follow-up
+                            </button>
+                            <button class="btn-secondary text-sm">
+                                <i class="fas fa-notes-medical"></i>
+                                Agregar Nota
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Log 3 -->
+                <div class="call-log">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold">Ana Morales - Digital Solutions</h4>
+                            <p class="text-sm text-gray-400">+57 320 456 7890 • Agente: Miguel</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-offline">No contestó</span>
+                            <div class="text-sm text-gray-400 mt-1">Hoy 12:45 • 0m 30s</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-3 mb-3">
+                        <div class="text-sm text-gray-300 mb-2">Nota automática:</div>
+                        <p class="text-sm">Llamada no contestada. Se envió mensaje de voz automático. Reintento programado para mañana a las 10:00 AM.</p>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm">Estado: <span class="text-gray-400">Pendiente</span></span>
+                            <span class="text-sm">Intentos: <span class="text-blue-400">1/3</span></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-primary text-sm">
+                                <i class="fas fa-phone"></i>
+                                Llamar Ahora
+                            </button>
+                            <button class="btn-secondary text-sm">
+                                <i class="fas fa-calendar"></i>
+                                Reprogramar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Statistics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="chart-container">
+                    <h3 class="text-xl font-semibold mb-4">Tendencias Históricas</h3>
+                    <canvas id="historicalChart"></canvas>
+                </div>
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Estadísticas del Período</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span>Total de llamadas:</span>
+                            <span class="font-semibold text-blue-400">2,847</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Llamadas exitosas:</span>
+                            <span class="font-semibold text-green-400">2,156 (75.7%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Conversiones:</span>
+                            <span class="font-semibold text-green-400">532 (24.7%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tiempo promedio:</span>
+                            <span class="font-semibold text-yellow-400">4m 23s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Satisfacción promedio:</span>
+                            <span class="font-semibold text-purple-400">4.6/5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Ingresos generados:</span>
+                            <span class="font-semibold text-green-400">$156,240</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="content-section">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Configuración</h1>
+                <p class="text-gray-400">Personaliza tu plataforma y agentes</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- General Settings -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Configuración General</h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">Idioma</label>
+                            <select class="form-input">
+                                <option>Español (ES)</option>
+                                <option>English (EN)</option>
+                                <option>Português (PT)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Zona Horaria</label>
+                            <select class="form-input">
+                                <option>UTC-5 (Bogotá)</option>
+                                <option>UTC-3 (Buenos Aires)</option>
+                                <option>UTC-6 (México)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Formato de Fecha</label>
+                            <select class="form-input">
+                                <option>DD/MM/YYYY</option>
+                                <option>MM/DD/YYYY</option>
+                                <option>YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Notificaciones por email</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Notificaciones push</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agent Personalization -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Personalización de Agentes</h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">Tono de voz predeterminado</label>
+                            <select class="form-input">
+                                <option>Profesional y amigable</option>
+                                <option>Casual y cercano</option>
+                                <option>Formal y corporativo</option>
+                                <option>Entusiasta y enérgico</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Velocidad de habla</label>
+                            <input type="range" class="w-full" min="0.5" max="2" step="0.1" value="1">
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Lento</span>
+                                <span>Normal</span>
+                                <span>Rápido</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Saludo personalizado</label>
+                            <textarea class="form-input" rows="3" placeholder="Buenos días, soy [AGENT_NAME] de [COMPANY_NAME]..."></textarea>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Configuración
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Management -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Administración de Usuarios</h3>
+                    <div class="space-y-4">
+                        <button class="btn-primary w-full" onclick="openModal('newUserModal')">
+                            <i class="fas fa-user-plus"></i>
+                            Agregar Usuario
+                        </button>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div>
+                                    <div class="font-semibold">Carlos Mendoza</div>
+                                    <div class="text-sm text-gray-400">Administrador</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="text-blue-400"><i class="fas fa-edit"></i></button>
+                                    <button class="text-red-400"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div>
+                                    <div class="font-semibold">Laura Vega</div>
+                                    <div class="text-sm text-gray-400">Supervisor</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="text-blue-400"><i class="fas fa-edit"></i></button>
+                                    <button class="text-red-400"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div>
+                                    <div class="font-semibold">Roberto Silva</div>
+                                    <div class="text-sm text-gray-400">Operador</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="text-blue-400"><i class="fas fa-edit"></i></button>
+                                    <button class="text-red-400"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Configuration -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Plan y Facturación</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4">
+                            <div class="font-semibold text-lg">Plan Premium</div>
+                            <div class="text-sm text-blue-100">Agentes ilimitados • Soporte 24/7</div>
+                            <div class="text-2xl font-bold mt-2">$299/mes</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-400">Ilimitados</div>
+                                <div class="text-sm text-gray-400">Agentes activos</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-400">15,847</div>
+                                <div class="text-sm text-gray-400">Minutos usados</div>
+                            </div>
+                        </div>
+                        <button class="btn-secondary w-full">
+                            <i class="fas fa-credit-card"></i>
+                            Cambiar Plan
+                        </button>
+                        <button class="btn-secondary w-full">
+                            <i class="fas fa-download"></i>
+                            Descargar Factura
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Parameters -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Parámetros del Sistema</h3>
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label class="form-label">Calidad de audio</label>
+                            <select class="form-input">
+                                <option>Alta (320 kbps)</option>
+                                <option>Media (128 kbps)</option>
+                                <option>Baja (64 kbps)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tiempo de espera (segundos)</label>
+                            <input type="number" class="form-input" value="30" min="10" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Reintentos automáticos</label>
+                            <input type="number" class="form-input" value="3" min="0" max="10">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Respaldo automático</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Modo debug</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations -->
+                <div class="config-section">
+                    <h3 class="text-xl font-semibold mb-4">Integraciones</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <i class="fab fa-salesforce text-2xl text-blue-400"></i>
+                                <div>
+                                    <div class="font-semibold">Salesforce CRM</div>
+                                    <div class="text-sm text-gray-400">Conectado</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <i class="fab fa-hubspot text-2xl text-orange-400"></i>
+                                <div>
+                                    <div class="font-semibold">HubSpot</div>
+                                    <div class="text-sm text-gray-400">Desconectado</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-envelope text-2xl text-red-400"></i>
+                                <div>
+                                    <div class="font-semibold">Gmail</div>
+                                    <div class="text-sm text-gray-400">Conectado</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-primary w-full">
+                            <i class="fas fa-plus"></i>
+                            Agregar Integración
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Client Modal -->
+    <div id="newClientModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Nuevo Cliente</h2>
+                <button onclick="closeModal('newClientModal')" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" class="form-input" placeholder="Ej: María González">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Empresa</label>
+                        <input type="text" class="form-input" placeholder="Ej: TechCorp S.A.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-input" placeholder="Ej: +57 301 234 5678">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="Ej: maria@techcorp.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Industria</label>
+                        <select class="form-input">
+                            <option>Tecnología</option>
+                            <option>Salud</option>
+                            <option>Finanzas</option>
+                            <option>Educación</option>
+                            <option>Retail</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Presupuesto estimado</label>
+                        <input type="number" class="form-input" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notas</label>
+                    <textarea class="form-input" rows="3" placeholder="Información adicional sobre el cliente..."></textarea>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="btn-primary flex-1">
+                        <i class="fas fa-save"></i>
+                        Guardar Cliente
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('newClientModal')">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Agent Modal -->
+    <div id="newAgentModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Nuevo Agente</h2>
+                <button onclick="closeModal('newAgentModal')" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del agente</label>
+                        <input type="text" class="form-input" placeholder="Ej: Sofia Ramírez">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Especialización</label>
+                        <select class="form-input">
+                            <option>Ventas</option>
+                            <option>Soporte técnico</option>
+                            <option>Servicio al cliente</option>
+                            <option>Prospección</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Idioma principal</label>
+                        <select class="form-input">
+                            <option>Español</option>
+                            <option>Inglés</option>
+                            <option>Portugués</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nivel de entrenamiento</label>
+                        <select class="form-input">
+                            <option>Básico</option>
+                            <option>Intermedio</option>
+                            <option>Avanzado</option>
+                            <option>Experto</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción y personalidad</label>
+                    <textarea class="form-input" rows="4" placeholder="Describe el carácter y enfoque del agente..."></textarea>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="btn-primary flex-1">
+                        <i class="fas fa-robot"></i>
+                        Crear Agente
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('newAgentModal')">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New User Modal -->
+    <div id="newUserModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Nuevo Usuario</h2>
+                <button onclick="closeModal('newUserModal')" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" class="form-input" placeholder="Ej: Roberto Silva">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="Ej: roberto@empresa.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rol</label>
+                        <select class="form-input">
+                            <option>Operador</option>
+                            <option>Supervisor</option>
+                            <option>Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-input" placeholder="Ej: +57 301 234 5678">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Permisos especiales</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2"> Acceso a configuración
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2"> Gestión de usuarios
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2"> Exportar reportes
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2"> Modificar agentes
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="btn-primary flex-1">
+                        <i class="fas fa-user-plus"></i>
+                        Crear Usuario
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('newUserModal')">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-check-circle text-green-400"></i>
+            <span id="toastMessage">Acción completada exitosamente</span>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let activeSection = 'dashboard';
+        let charts = {};
+
+        // Navigation
+        function switchSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(section + '-section').classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            activeSection = section;
+            
+            // Initialize charts for the section if needed
+            if (section === 'dashboard') {
+                setTimeout(initDashboardCharts, 100);
+            } else if (section === 'agents') {
+                setTimeout(initAgentCharts, 100);
+            } else if (section === 'history') {
+                setTimeout(initHistoryCharts, 100);
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize Dashboard Charts
+        function initDashboardCharts() {
+            // Daily Performance Chart
+            const dailyCtx = document.getElementById('dailyChart');
+            if (dailyCtx && !charts.daily) {
+                charts.daily = new Chart(dailyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                        datasets: [{
+                            label: 'Llamadas',
+                            data: [156, 189, 178, 221, 198, 145, 167],
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Conversiones',
+                            data: [28, 35, 32, 41, 38, 27, 31],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Comparison Chart
+            const compCtx = document.getElementById('comparisonChart');
+            if (compCtx && !charts.comparison) {
+                charts.comparison = new Chart(compCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['IA - Eficiencia', 'IA - Costo', 'Humano - Eficiencia', 'Humano - Costo'],
+                        datasets: [{
+                            data: [85, 15, 60, 40],
+                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize Agent Charts
+        function initAgentCharts() {
+            const agentCtx = document.getElementById('agentPerformanceChart');
+            if (agentCtx && !charts.agentPerformance) {
+                charts.agentPerformance = new Chart(agentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Luis', 'Ana', 'Miguel'],
+                        datasets: [{
+                            label: 'Llamadas',
+                            data: [47, 52, 31],
+                            backgroundColor: '#3B82F6'
+                        }, {
+                            label: 'Conversiones',
+                            data: [12, 18, 8],
+                            backgroundColor: '#10B981'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize History Charts
+        function initHistoryCharts() {
+            const histCtx = document.getElementById('historicalChart');
+            if (histCtx && !charts.historical) {
+                charts.historical = new Chart(histCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                        datasets: [{
+                            label: 'Tasa de Conversión (%)',
+                            data: [18.2, 19.5, 21.3, 24.7],
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Satisfacción (/5)',
+                            data: [4.2, 4.4, 4.5, 4.6],
+                            borderColor: '#F59E0B',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'white' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Real-time data simulation
+        function updateMetrics() {
+            const metrics = {
+                activeCalls: document.getElementById('activeCalls'),
+                leadsToday: document.getElementById('leadsToday'),
+                conversionRate: document.getElementById('conversionRate'),
+                estimatedRevenue: document.getElementById('estimatedRevenue')
+            };
+
+            // Simulate real-time updates
+            setInterval(() => {
+                if (metrics.activeCalls) {
+                    const currentCalls = parseInt(metrics.activeCalls.textContent);
+                    const variation = Math.floor(Math.random() * 6) - 3; // -3 to +3
+                    const newValue = Math.max(0, currentCalls + variation);
+                    metrics.activeCalls.textContent = newValue;
+                }
+
+                if (metrics.leadsToday) {
+                    const currentLeads = parseInt(metrics.leadsToday.textContent);
+                    if (Math.random() < 0.3) { // 30% chance to increment
+                        metrics.leadsToday.textContent = currentLeads + 1;
+                    }
+                }
+            }, 5000);
+        }
+
+        // File upload simulation
+        function initFileUpload() {
+            const dragZone = document.querySelector('.drag-zone');
+            const fileInput = document.getElementById('fileInput');
+
+            if (dragZone) {
+                dragZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dragZone.classList.add('dragover');
+                });
+
+                dragZone.addEventListener('dragleave', () => {
+                    dragZone.classList.remove('dragover');
+                });
+
+                dragZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dragZone.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        showToast(`${files.length} archivo(s) cargado(s) exitosamente`);
+                        setTimeout(() => {
+                            // Simulate adding new clients to table
+                            addSampleClient();
+                        }, 1000);
+                    }
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        showToast(`${e.target.files.length} archivo(s) seleccionado(s)`);
+                        setTimeout(() => {
+                            addSampleClient();
+                        }, 1000);
+                    }
+                });
+            }
+        }
+
+        // Add sample client to table
+        function addSampleClient() {
+            const tableBody = document.getElementById('clientsTableBody');
+            if (tableBody) {
+                const sampleClients = [
+                    {
+                        name: 'Pedro Jiménez',
+                        company: 'StartupXYZ',
+                        phone: '+57 315 123 4567',
+                        email: 'pedro@startupxyz.com',
+                        industry: 'Tecnología',
+                        status: 'lead-warm'
+                    },
+                    {
+                        name: 'Sofia Castro',
+                        company: 'MedTech Solutions',
+                        phone: '+57 304 987 6543',
+                        email: 'sofia@medtech.com',
+                        industry: 'Salud',
+                        status: 'lead-hot'
+                    }
+                ];
+
+                const randomClient = sampleClients[Math.floor(Math.random() * sampleClients.length)];
+                const statusLabel = randomClient.status === 'lead-hot' ? 'Caliente' : 'Tibio';
+
+                const newRow = document.createElement('div');
+                newRow.className = 'table-row grid grid-cols-7 gap-4 items-center';
+                newRow.innerHTML = `
+                    <div class="font-medium">${randomClient.name}</div>
+                    <div>${randomClient.company}</div>
+                    <div>${randomClient.phone}</div>
+                    <div class="text-blue-400">${randomClient.email}</div>
+                    <div>${randomClient.industry}</div>
+                    <div><span class="status-badge ${randomClient.status}">${statusLabel}</span></div>
+                    <div class="flex gap-2">
+                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                        <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+
+                tableBody.appendChild(newRow);
+                newRow.style.animation = 'slideIn 0.5s ease';
+            }
+        }
+
+        // Form submissions
+        document.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (e.target.closest('#newClientModal')) {
+                showToast('Cliente creado exitosamente');
+                closeModal('newClientModal');
+                setTimeout(addSampleClient, 500);
+            } else if (e.target.closest('#newAgentModal')) {
+                showToast('Agente creado exitosamente');
+                closeModal('newAgentModal');
+            } else if (e.target.closest('#newUserModal')) {
+                showToast('Usuario creado exitosamente');
+                closeModal('newUserModal');
+            }
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initDashboardCharts();
+            updateMetrics();
+            initFileUpload();
+            
+            // Close modals when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+        });
+
+        // Mobile menu toggle (for responsive)
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Audio player simulation
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.play-btn')) {
+                const btn = e.target.closest('.play-btn');
+                const icon = btn.querySelector('i');
+                
+                if (icon.classList.contains('fa-play')) {
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                    showToast('Reproduciendo audio de llamada');
+                } else {
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                    showToast('Audio pausado');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
